@@ -1064,59 +1064,72 @@
 
 
 /* =========================================================
-    GALLERY IMAGE / VIDEO ZOOM
+   MOBILE GALLERY — 3 ITEMS PER ROW
    ========================================================= */
 
-.gallery-grid .polaroid {
-    cursor: pointer;
+@media (max-width: 480px) {
+
+    /* Keep the gallery title fully visible */
+    #pageGallery {
+        padding-top: 25px;
+    }
+
+    /* 3 items in every row:
+       small — large — small */
+    #pageGallery .gallery-grid {
+        display: grid;
+        grid-template-columns: 0.7fr 2fr 0.7fr;
+        gap: 18px 8px;
+        width: 96vw;
+        margin: 0 auto;
+        align-items: center;
+    }
+
+    #pageGallery .polaroid {
+        width: 100%;
+        min-width: 0;
+        transform: none !important;
+        cursor: pointer;
+    }
+
+    /* The middle item of every group of 3 is the large one */
+    #pageGallery .polaroid:nth-child(3n + 2) {
+        transform: scale(1.08) !important;
+        z-index: 2;
+    }
+
+    #pageGallery .photo-placeholder {
+        width: 100%;
+    }
+
+    #pageGallery .photo-placeholder video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Make the second page scroll from the top on small screens,
+       so "From me to you." can never be cut off. */
+    #pageIntro {
+        align-items: flex-start;
+        padding: 20px 12px 40px;
+    }
+
+    #pageIntro .intro-container {
+        min-height: auto;
+        width: 100%;
+        justify-content: flex-start;
+        padding: 10px 0 30px;
+    }
+
+    #pageIntro .intro-title {
+        width: 100%;
+        line-height: 1.15;
+    }
 }
 
-.gallery-grid .polaroid.zoomed {
-    position: fixed;
-    z-index: 9999;
-    top: 50%;
-    left: 50%;
-    width: min(80vw, 500px);
-    transform: translate(-50%, -50%) !important;
-    transition: all 0.35s ease;
-    cursor: zoom-out;
-}
-
-.gallery-grid .polaroid.zoomed .photo-placeholder {
-    aspect-ratio: 1 / 1;
-}
-
-.gallery-grid .polaroid.zoomed img,
-.gallery-grid .polaroid.zoomed video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.gallery-grid .polaroid.zoomed video {
-    background: #000;
-}
-
-/* الخلفية اللي بتظهر ورا الصورة المكبرة */
-.gallery-grid::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(40, 20, 25, 0.55);
-    z-index: 9998;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.35s ease;
-    pointer-events: none;
-}
-
-.gallery-grid.has-zoomed::after {
-    opacity: 1;
-    visibility: visible;
-}
-
-
-    </style>
+</style>
     </head>
 
 
@@ -1634,7 +1647,7 @@
 
                     <div class="photo-placeholder">
 
-                    <video src="img/VID_20260825_223754_180.mp4" controls>
+                    <video src="img/lv_7655629538696662288_20260826160935.mp4" controls>
                         
                     </video>
 
@@ -2380,76 +2393,65 @@
     });
 
 /* =========================================================
-   GALLERY ZOOM
+   MOBILE GALLERY — CLICKED ITEM BECOMES THE CENTER
    ========================================================= */
 
-const galleryItems = document.querySelectorAll(
-    ".gallery-grid .polaroid"
+const galleryGrid = document.querySelector(".gallery-grid");
+const galleryItems = Array.from(
+    document.querySelectorAll(".gallery-grid .polaroid")
 );
 
 galleryItems.forEach(item => {
+    item.addEventListener("click", () => {
 
-    item.addEventListener("click", (event) => {
-
-        event.stopPropagation();
-
-        const isZoomed =
-            item.classList.contains("zoomed");
-
-        // لو الصورة مكبرة بالفعل → رجعها لمكانها
-        if (isZoomed) {
-
-            item.classList.remove("zoomed");
-
-            item.closest(".gallery-grid")
-                .classList.remove("has-zoomed");
-
-            const video =
-                item.querySelector("video");
-
-            if (video) {
-                video.pause();
-            }
-
+        /* On desktop, do nothing. */
+        if (window.innerWidth > 480) {
             return;
         }
 
-        // اقفل أي صورة أو فيديو مفتوح حاليًا
-        galleryItems.forEach(otherItem => {
+        const currentItems =
+            Array.from(galleryGrid.children);
 
-            otherItem.classList.remove("zoomed");
+        const currentIndex =
+            currentItems.indexOf(item);
 
-            const otherVideo =
-                otherItem.querySelector("video");
+        if (currentIndex === -1) return;
 
-            if (otherVideo) {
-                otherVideo.pause();
-            }
+        /* Find the group of 3 containing the clicked item. */
+        const rowStart =
+            Math.floor(currentIndex / 3) * 3;
 
-        });
+        const rowItems =
+            currentItems.slice(rowStart, rowStart + 3);
 
-        // كبّر العنصر الحالي
-        item.classList.add("zoomed");
-
-        item.closest(".gallery-grid")
-            .classList.add("has-zoomed");
-
-        // لو العنصر فيديو → شغله
-        const video =
-            item.querySelector("video");
-
-        if (video) {
-
-            video.play().catch(() => {});
-
+        /* If it is already in the center, leave it there. */
+        if (rowItems[1] === item) {
+            return;
         }
 
+        const clickedPosition = currentIndex - rowStart;
+
+        /* Swap the clicked item with the center item. */
+        const reorderedRow = [...rowItems];
+        [
+            reorderedRow[clickedPosition],
+            reorderedRow[1]
+        ] = [
+            reorderedRow[1],
+            reorderedRow[clickedPosition]
+        ];
+
+        /* Reinsert only these 3 items in their new order. */
+        rowItems.forEach(rowItem => rowItem.remove());
+
+        reorderedRow.forEach(rowItem => {
+            galleryGrid.appendChild(rowItem);
+        });
     });
+}
 
-});
 
-
-    </script>
+</script>
 
     </body>
 
