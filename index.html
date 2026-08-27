@@ -998,6 +998,36 @@
         }
     }
 
+.gallery-fullscreen-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 2147483647;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-fullscreen-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background: #fff;
+    cursor: pointer;
+}
+
+.gallery-fullscreen-media::-webkit-media-controls {
+    z-index: 3;
+}
+
 @media (max-width: 480px) {
 
     .gift-button {
@@ -1076,12 +1106,19 @@
 
     /* 3 items in every row:
        small — large — small */
+    #pageGallery .gallery-wrapper {
+        width: 90vw;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     #pageGallery .gallery-grid {
         display: grid;
-        grid-template-columns: 0.7fr 2fr 0.7fr;
-        gap: 18px 8px;
-        width: 96vw;
-        margin: 0 auto;
+        grid-template-columns: 0.9fr 1.65fr 0.9fr;
+        column-gap: 10px;
+        row-gap: 34px;
+        width: 100%;
+        margin: 0;
         align-items: center;
     }
 
@@ -1109,6 +1146,13 @@
         display: block;
     }
 
+
+    /* Center item is slightly larger */
+    #pageGallery .polaroid:nth-child(3n + 2) {
+        transform: scale(1.12) !important;
+        z-index: 2;
+    }
+
     /* Make the second page scroll from the top on small screens,
        so "From me to you." can never be cut off. */
     #pageIntro {
@@ -1126,6 +1170,20 @@
     #pageIntro .intro-title {
         width: 100%;
         line-height: 1.15;
+    }
+
+    /* Keep the music page aligned like the gallery:
+       more space on the right, content slightly to the left. */
+    #pageMusic .music-wrapper {
+        width: 90vw;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #pageMusic .music-grid {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
     }
 }
 
@@ -2401,11 +2459,84 @@ const galleryItems = Array.from(
     document.querySelectorAll(".gallery-grid .polaroid")
 );
 
-galleryItems.forEach(item => {
-    item.addEventListener("click", () => {
+/* =========================================================
+   FULLSCREEN GALLERY OVERLAY
+   This is outside the gallery page so the .page overflow/transform
+   cannot clip the fullscreen image or video.
+   ========================================================= */
 
-        /* On desktop, do nothing. */
+let galleryOverlay = null;
+let galleryOverlayMedia = null;
+
+function closeGalleryFullscreen() {
+    if (!galleryOverlay) return;
+
+    if (galleryOverlayMedia && galleryOverlayMedia.tagName === "VIDEO") {
+        galleryOverlayMedia.pause();
+    }
+
+    galleryOverlay.remove();
+    galleryOverlay = null;
+    galleryOverlayMedia = null;
+    document.body.style.overflow = "hidden";
+}
+
+function openGalleryFullscreen(item) {
+    closeGalleryFullscreen();
+
+    galleryOverlay = document.createElement("div");
+    galleryOverlay.className = "gallery-fullscreen-overlay";
+
+    const media = item.querySelector("img, video");
+    if (!media) return;
+
+    galleryOverlayMedia = media.cloneNode(true);
+    galleryOverlayMedia.removeAttribute("id");
+    galleryOverlayMedia.className = "gallery-fullscreen-media";
+
+    if (galleryOverlayMedia.tagName === "VIDEO") {
+        galleryOverlayMedia.setAttribute("controls", "");
+        galleryOverlayMedia.setAttribute("playsinline", "");
+        galleryOverlayMedia.addEventListener("click", (event) => {
+            /* Keep the second tap on the video itself as the close action.
+               Native controls remain usable through the controls area. */
+            if (event.offsetY < galleryOverlayMedia.clientHeight - 55) {
+                closeGalleryFullscreen();
+            }
+        });
+    } else {
+        galleryOverlayMedia.addEventListener("click", closeGalleryFullscreen);
+    }
+
+    galleryOverlay.appendChild(galleryOverlayMedia);
+
+    galleryOverlay.addEventListener("click", (event) => {
+        if (event.target === galleryOverlay) {
+            closeGalleryFullscreen();
+        }
+    });
+
+    document.body.appendChild(galleryOverlay);
+    document.body.style.overflow = "hidden";
+}
+
+/* Close with Escape too */
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeGalleryFullscreen();
+    }
+});
+
+galleryItems.forEach(item => {
+    item.addEventListener("click", (event) => {
+
+        /* Keep the original mobile gallery behavior. */
         if (window.innerWidth > 480) {
+            return;
+        }
+
+        /* Do not let video native controls trigger the row swap. */
+        if (event.target.tagName === "VIDEO" && event.offsetY > event.target.clientHeight - 55) {
             return;
         }
 
@@ -2424,15 +2555,24 @@ galleryItems.forEach(item => {
         const rowItems =
             currentItems.slice(rowStart, rowStart + 3);
 
-        /* If it is already in the center, leave it there. */
+        /* The middle item opens fullscreen. Tap it again to return. */
         if (rowItems[1] === item) {
+            if (galleryOverlay) {
+                closeGalleryFullscreen();
+            } else {
+                openGalleryFullscreen(item);
+            }
             return;
         }
+
+        /* If another image is fullscreen, close it first. */
+        closeGalleryFullscreen();
 
         const clickedPosition = currentIndex - rowStart;
 
         /* Swap the clicked item with the center item. */
         const reorderedRow = [...rowItems];
+
         [
             reorderedRow[clickedPosition],
             reorderedRow[1]
@@ -2441,15 +2581,78 @@ galleryItems.forEach(item => {
             reorderedRow[clickedPosition]
         ];
 
-        /* Reinsert only these 3 items in their new order. */
-        rowItems.forEach(rowItem => rowItem.remove());
+        /* Keep this exact row in its original position. */
+        const rowAnchor = rowItems[0];
+        const placeholder = document.createComment("gallery-row-anchor");
+        galleryGrid.insertBefore(placeholder, rowAnchor);
 
+        const fragment = document.createDocumentFragment();
         reorderedRow.forEach(rowItem => {
-            galleryGrid.appendChild(rowItem);
+            fragment.appendChild(rowItem);
+        });
+
+        galleryGrid.insertBefore(fragment, placeholder);
+        placeholder.remove();
+    });
+});
+
+
+    // =========================================================
+    // MUSIC: PLAY ONLY ONE SONG AT A TIME
+    // =========================================================
+    const allSongPlayers = document.querySelectorAll(".music-card audio");
+
+    allSongPlayers.forEach((player) => {
+        player.addEventListener("play", () => {
+            allSongPlayers.forEach((otherPlayer) => {
+                if (otherPlayer !== player) {
+                    otherPlayer.pause();
+                }
+            });
         });
     });
-}
 
+    // =========================================================
+    // CLICK SONG COVER TO PLAY THE SONG
+    // =========================================================
+    document.querySelectorAll(".music-card").forEach((card) => {
+        const cover = card.querySelector(".song-cover");
+        const player = card.querySelector("audio");
+
+        if (cover && player) {
+            cover.style.cursor = "pointer";
+
+            cover.addEventListener("click", async (event) => {
+                event.stopPropagation();
+
+                try {
+                    await player.play();
+                } catch (error) {
+                    console.log("Song could not start:", error);
+                }
+            });
+        }
+    });
+
+    // =========================================================
+    // CLICK GALLERY VIDEO TO PLAY / PAUSE
+    // =========================================================
+    document.querySelectorAll("#pageGallery video").forEach((video) => {
+        video.addEventListener("click", async (event) => {
+            // The click belongs to the video itself, not the gallery swap.
+            event.stopPropagation();
+
+            try {
+                if (video.paused) {
+                    await video.play();
+                } else {
+                    video.pause();
+                }
+            } catch (error) {
+                console.log("Video could not start:", error);
+            }
+        });
+    });
 
 </script>
 
@@ -2551,4 +2754,5 @@ galleryItems.forEach(item => {
         }
     });
 </script> -->
+
     </html>
