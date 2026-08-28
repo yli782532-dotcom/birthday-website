@@ -13,10 +13,26 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&display=swap');
 
-            body::selection {
-                background-color: #b51f3d;
-                color: white;
+            /* No blue text/image selection anywhere on the page. */
+            *, *::before, *::after {
+                -webkit-tap-highlight-color: transparent;
             }
+
+            *::selection {
+                background: transparent;
+                color: inherit;
+            }
+
+            *::-moz-selection {
+                background: transparent;
+                color: inherit;
+            }
+            a, button, img, video, .polaroid, .gallery-photo, .gallery-video-card {
+                user-select: none;
+                -webkit-user-select: none;
+                -webkit-touch-callout: none;
+            }
+
 
         :root {
             --cream: #ffb8bc;
@@ -761,31 +777,31 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            align-items: center;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 26px;
+            align-items: start;
         }
 
         .polaroid {
             background: #fff;
             padding: 10px 10px 25px;
             box-shadow: 0 18px 35px rgba(50,25,30,0.13);
-            transition: transform 0.3s ease;
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
         }
 
-        .polaroid:nth-child(1) { transform: rotate(-2deg); }
-        .polaroid:nth-child(2) { transform: rotate(2deg); }
-        .polaroid:nth-child(3) { transform: rotate(-1deg); }
-        .polaroid:nth-child(4) { transform: rotate(2deg); }
-        .polaroid:nth-child(5) { transform: rotate(-2deg); }
-        .polaroid:nth-child(6) { transform: rotate(1deg); }
-        .polaroid:nth-child(7) { transform: rotate(-2deg); }
-        .polaroid:nth-child(8) { transform: rotate(2deg); }
-        .polaroid:nth-child(9) { transform: rotate(-1deg); }
+        .polaroid:nth-child(4n + 1) { transform: rotate(-2deg); }
+        .polaroid:nth-child(4n + 2) { transform: rotate(2deg); }
+        .polaroid:nth-child(4n + 3) { transform: rotate(-1deg); }
+        .polaroid:nth-child(4n + 4) { transform: rotate(1.5deg); }
 
         .polaroid:hover {
-            transform: rotate(0deg) translateY(-8px) scale(1.02);
+            transform: rotate(0deg) translateY(-8px) scale(1.025);
             z-index: 3;
+            box-shadow: 0 24px 45px rgba(50,25,30,0.18);
         }
 
         .photo-placeholder {
@@ -806,11 +822,16 @@
             font-size: 22px;
         }
 
-        .photo-placeholder img {
+        .photo-placeholder img,
+        .photo-placeholder video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        .photo-placeholder video {
+            background: #111;
         }
 
         .gallery-letter {
@@ -1009,28 +1030,169 @@
         width: 100vw;
         height: 100dvh;
         z-index: 2147483647;
-        background: #fff;
+        background: rgba(25, 15, 20, 0.88);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 18px;
+        padding: 30px;
         overflow: hidden;
-        cursor: pointer;
+        cursor: default;
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
     }
 
-    .gallery-fullscreen-media {
+    .gallery-lightbox-media {
         display: block;
-        width: 100%;
-        height: 100%;
-        max-width: 100%;
-        max-height: 100%;
+        width: auto;
+        height: auto;
+        max-width: min(90vw, 1100px);
+        max-height: 88dvh;
         object-fit: contain;
         background: #fff;
-        cursor: pointer;
+        padding: 12px 12px 28px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+        border-radius: 2px;
+        cursor: default;
+        animation: galleryLightboxIn 0.28s ease both;
     }
 
-    .gallery-fullscreen-media::-webkit-media-controls {
-        z-index: 3;
+    .gallery-lightbox-media.landscape {
+        max-width: 90vw;
+        max-height: 82dvh;
+    }
+
+    .gallery-fullscreen-video {
+        display: block;
+        width: 100vw;
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+        object-fit: contain;
+        background: #000;
+        cursor: default;
+    }
+
+    .gallery-close {
+        position: absolute;
+        top: 18px;
+        right: 22px;
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.14);
+        color: #fff;
+        font-size: 26px;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 4;
+        backdrop-filter: blur(8px);
+    }
+
+    .gallery-nav {
+        z-index: 20;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 46px;
+        height: 46px;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.16);
+        color: #fff;
+        font-size: 30px;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 4;
+        backdrop-filter: blur(8px);
+    }
+
+    .gallery-nav.prev {
+        left: 22px;
+    }
+
+    .gallery-nav.next {
+        right: 22px;
+    }
+
+    .gallery-caption {
+        position: absolute;
+        left: 50%;
+        bottom: 48px;
+        transform: translateX(-50%);
+        width: min(78vw, 760px);
+        text-align: center;
+        color: rgba(255,255,255,0.95);
+        font-family: "Caveat", cursive;
+        font-size: clamp(22px, 3vw, 30px);
+        line-height: 1.25;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+        pointer-events: none;
+        z-index: 4;
+    }
+
+    .gallery-counter {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        color: rgba(255,255,255,0.9);
+        font-family: "Caveat", cursive;
+        font-size: 20px;
+        z-index: 4;
+    }
+
+    @keyframes galleryLightboxIn {
+        from {
+            opacity: 0;
+            transform: scale(0.92);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .gallery-fullscreen-overlay {
+            padding: 12px;
+        }
+
+        .gallery-lightbox-media {
+            max-width: 92vw;
+            max-height: 82dvh;
+            padding: 7px 7px 18px;
+        }
+
+        .gallery-fullscreen-video {
+            width: 100vw;
+            height: 100dvh;
+        }
+
+        .gallery-caption {
+            bottom: 48px;
+            width: 82vw;
+            font-size: 22px;
+        }
+
+        .gallery-close {
+            top: 12px;
+            right: 12px;
+        }
+
+        .gallery-nav {
+            width: 40px;
+            height: 40px;
+            font-size: 25px;
+        }
+
+        .gallery-nav.prev {
+            left: 10px;
+        }
+
+        .gallery-nav.next {
+            right: 10px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -1099,67 +1261,51 @@
 
 
     /* =========================================================
-    MOBILE GALLERY — 3 ITEMS PER ROW
+    MOBILE GALLERY
     ========================================================= */
 
-    @media (max-width: 480px) {
+    @media (max-width: 750px) {
+        .gallery-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+    }
 
-        /* Keep the gallery title fully visible */
+    @media (max-width: 480px) {
         #pageGallery {
             padding-top: 25px;
         }
 
-        /* 3 items in every row:
-        small — large — small */
         #pageGallery .gallery-wrapper {
-            width: 90vw;
+            width: 94vw;
             margin-left: auto;
             margin-right: auto;
         }
 
         #pageGallery .gallery-grid {
-            display: grid;
-            grid-template-columns: 0.9fr 1.65fr 0.9fr;
-            column-gap: 10px;
-            row-gap: 34px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
             width: 100%;
             margin: 0;
-            align-items: center;
         }
 
         #pageGallery .polaroid {
             width: 100%;
             min-width: 0;
             transform: none !important;
-            cursor: pointer;
         }
 
-        /* The middle item of every group of 3 is the large one */
-        #pageGallery .polaroid:nth-child(3n + 2) {
-            transform: scale(1.08) !important;
-            z-index: 2;
+        #pageGallery .polaroid:hover {
+            transform: translateY(-5px) scale(1.01) !important;
         }
 
         #pageGallery .photo-placeholder {
             width: 100%;
+            aspect-ratio: 4 / 5;
         }
-
-        #pageGallery .photo-placeholder video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+    }
 
 
-        /* Center item is slightly larger */
-        #pageGallery .polaroid:nth-child(3n + 2) {
-            transform: scale(1.12) !important;
-            z-index: 2;
-        }
-
-        /* Make the second page scroll from the top on small screens,
-        so "From me to you." can never be cut off. */
         #pageIntro {
             align-items: flex-start;
             padding: 20px 12px 40px;
@@ -1192,14 +1338,12 @@
         }
     }
 
-    img::selection {
+    img,
+    video {
         user-select: none;
-        outline: none;
-    }
-
-    *::selection {
-        user-select: none;
-        outline: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
     }
 
     </style>
@@ -1634,173 +1778,319 @@
                 </div>
 
 
-                <div class="gallery-grid">
-
-
-                    <!-- =================================================
-                        PHOTO 1
-                        ================================================= -->
-
-                    <div class="polaroid">
-
+                <div class="gallery-grid">\n\n                    <!-- PHOTO 1 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="0" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
-                            <!--
-                                PUT YOUR PHOTO HERE
-
-                                Example:
-                                src="images/photo1.jpg"
-                            -->
-
                             <img
-                                src="img/IMG_20260822_033418_473.jpg"
+                                src="img/gallery/photo01.jpg"
                                 alt="Our memory 1"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 2 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="1" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_090.jpg"
+                                src="img/gallery/photo02.jpg"
                                 alt="Our memory 2"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 3 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="2" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_092.jpg"
+                                src="img/gallery/photo03.jpg"
                                 alt="Our memory 3"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 4 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="3" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_093.jpg"
+                                src="img/gallery/photo04.jpg"
                                 alt="Our memory 4"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 5 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="4" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
-                        <video src="img/lv_7655629538696662288_20260826160935.mp4" controls>
-                            
-                        </video>
-
+                            <img
+                                src="img/gallery/photo05.jpg"
+                                alt="Our memory 5"
+                            >
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 6 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="5" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_311.jpg"
+                                src="img/gallery/photo06.jpg"
                                 alt="Our memory 6"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 7 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="6" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_358.jpg"
+                                src="img/gallery/photo07.jpg"
                                 alt="Our memory 7"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 8 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="7" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_769.jpg"
+                                src="img/gallery/photo08.jpg"
                                 alt="Our memory 8"
                             >
-
                         </div>
-
                     </div>
-
-
 
                     <!-- PHOTO 9 -->
-
-                    <div class="polaroid">
-
+                    <div class="polaroid gallery-photo" data-gallery-index="8" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
-
                             <img
-                                src="img/IMG_20260824_121954_580.jpg"
+                                src="img/gallery/photo09.jpg"
                                 alt="Our memory 9"
                             >
-
                         </div>
-
                     </div>
 
-                </div>
+                    <!-- PHOTO 10 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="9" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo10.jpg"
+                                alt="Our memory 10"
+                            >
+                        </div>
+                    </div>
 
+                    <!-- PHOTO 11 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="10" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo11.jpg"
+                                alt="Our memory 11"
+                            >
+                        </div>
+                    </div>
 
+                    <!-- PHOTO 12 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="11" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo12.jpg"
+                                alt="Our memory 12"
+                            >
+                        </div>
+                    </div>
 
-                <!-- =================================================
+                    <!-- PHOTO 13 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="12" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo13.jpg"
+                                alt="Our memory 13"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 14 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="13" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo14.jpg"
+                                alt="Our memory 14"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 15 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="14" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo15.jpg"
+                                alt="Our memory 15"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 16 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="15" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo16.jpg"
+                                alt="Our memory 16"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 17 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="16" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo17.jpg"
+                                alt="Our memory 17"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 18 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="17" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo18.jpg"
+                                alt="Our memory 18"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 19 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="18" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo19.jpg"
+                                alt="Our memory 19"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 20 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="19" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo20.jpg"
+                                alt="Our memory 20"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 21 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="20" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo21.jpg"
+                                alt="Our memory 21"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 22 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="21" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo22.jpg"
+                                alt="Our memory 22"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 23 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="22" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo23.jpg"
+                                alt="Our memory 23"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 24 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="23" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo24.jpg"
+                                alt="Our memory 24"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 25 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="24" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo25.jpg"
+                                alt="Our memory 25"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 26 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="25" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo26.jpg"
+                                alt="Our memory 26"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 27 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="26" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo27.jpg"
+                                alt="Our memory 27"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 28 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="27" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo28.jpg"
+                                alt="Our memory 28"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 29 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="28" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo29.jpg"
+                                alt="Our memory 29"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PHOTO 30 -->
+                    <div class="polaroid gallery-photo" data-gallery-index="29" data-caption="Write your caption here...">
+                        <div class="photo-placeholder">
+                            <img
+                                src="img/gallery/photo30.jpg"
+                                alt="Our memory 30"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- VIDEO -->
+                    <div class="polaroid gallery-video-card">
+                        <div class="photo-placeholder">
+                            <video
+                                src="img/gallery/video01.mp4"
+                                controls
+                                playsinline
+                                preload="metadata"
+                            ></video>
+                        </div>
+                    </div>
+
+                </div>\n\n\n                <!-- =================================================
                     LOVE LETTER
                     ================================================= -->
 
@@ -2466,28 +2756,43 @@
         });
 
     /* =========================================================
-    MOBILE GALLERY — CLICKED ITEM BECOMES THE CENTER
+    GALLERY — PHOTOS LIGHTBOX / VIDEO TRUE FULLSCREEN
     ========================================================= */
 
     const galleryGrid = document.querySelector(".gallery-grid");
-    const galleryItems = Array.from(
-        document.querySelectorAll(".gallery-grid .polaroid")
+    const galleryPhotos = Array.from(
+        document.querySelectorAll(".gallery-photo img")
     );
-
-    /* =========================================================
-    FULLSCREEN GALLERY OVERLAY
-    This is outside the gallery page so the .page overflow/transform
-    cannot clip the fullscreen image or video.
-    ========================================================= */
+    const galleryVideo = document.querySelector(".gallery-video-card video");
 
     let galleryOverlay = null;
     let galleryOverlayMedia = null;
+    let galleryCurrentIndex = 0;
+    let galleryTouchStartX = 0;
 
-    function closeGalleryFullscreen() {
+    function goGalleryNext() {
+        if (galleryCurrentIndex < galleryPhotos.length - 1) {
+            showGalleryPhoto(galleryCurrentIndex + 1);
+        } else if (galleryVideo) {
+            openGalleryVideoFullscreen(galleryVideo);
+        }
+    }
+
+    function goGalleryPrevious() {
+        if (galleryCurrentIndex > 0) {
+            showGalleryPhoto(galleryCurrentIndex - 1);
+        }
+    }
+
+    function closeGalleryOverlay() {
         if (!galleryOverlay) return;
 
-        if (galleryOverlayMedia && galleryOverlayMedia.tagName === "VIDEO") {
+        if (
+            galleryOverlayMedia &&
+            galleryOverlayMedia.tagName === "VIDEO"
+        ) {
             galleryOverlayMedia.pause();
+            galleryOverlayMedia.currentTime = 0;
         }
 
         galleryOverlay.remove();
@@ -2496,122 +2801,226 @@
         document.body.style.overflow = "hidden";
     }
 
-    function openGalleryFullscreen(item) {
-        closeGalleryFullscreen();
+    function createGalleryCloseButton() {
+        const button = document.createElement("button");
+        button.className = "gallery-close";
+        button.type = "button";
+        button.setAttribute("aria-label", "Close");
+        button.textContent = "×";
+        button.addEventListener("click", closeGalleryOverlay);
+        return button;
+    }
+
+    function showGalleryPhoto(index) {
+        if (!galleryPhotos.length) return;
+
+        galleryCurrentIndex =
+            (index + galleryPhotos.length) % galleryPhotos.length;
+
+        const image = galleryPhotos[galleryCurrentIndex];
+        const photoCard = image.closest(".gallery-photo");
+        const captionText =
+            photoCard?.dataset.caption?.trim() || "";
+
+        if (!galleryOverlay) {
+            galleryOverlay = document.createElement("div");
+            galleryOverlay.className = "gallery-fullscreen-overlay";
+
+            galleryOverlay.addEventListener("click", (event) => {
+                if (event.target === galleryOverlay) {
+                    closeGalleryOverlay();
+                }
+            });
+
+            galleryOverlay.addEventListener("touchstart", (event) => {
+                galleryTouchStartX = event.changedTouches[0].screenX;
+            }, { passive: true });
+
+            galleryOverlay.addEventListener("touchend", (event) => {
+                const endX = event.changedTouches[0].screenX;
+                const diff = endX - galleryTouchStartX;
+
+                if (Math.abs(diff) < 50) return;
+
+                if (diff < 0) {
+                    goGalleryNext();
+                } else {
+                    goGalleryPrevious();
+                }
+            }, { passive: true });
+
+            galleryOverlay.appendChild(createGalleryCloseButton());
+
+            const prev = document.createElement("button");
+            prev.className = "gallery-nav prev";
+            prev.type = "button";
+            prev.setAttribute("aria-label", "Previous photo");
+            prev.textContent = "‹";
+            prev.addEventListener("click", (event) => {
+                event.stopPropagation();
+                goGalleryPrevious();
+            });
+
+            const next = document.createElement("button");
+            next.className = "gallery-nav next";
+            next.type = "button";
+            next.setAttribute("aria-label", "Next photo");
+            next.textContent = "›";
+            next.addEventListener("click", (event) => {
+                event.stopPropagation();
+                goGalleryNext();
+            });
+
+            galleryOverlay.appendChild(prev);
+            galleryOverlay.appendChild(next);
+
+            document.body.appendChild(galleryOverlay);
+            document.body.style.overflow = "hidden";
+        }
+
+        if (galleryOverlayMedia) {
+            galleryOverlayMedia.remove();
+        }
+
+        galleryOverlayMedia = image.cloneNode(true);
+        galleryOverlayMedia.removeAttribute("id");
+        galleryOverlayMedia.className = "gallery-lightbox-media";
+
+        const applyOrientation = () => {
+            if (image.naturalWidth > image.naturalHeight) {
+                galleryOverlayMedia.classList.add("landscape");
+            } else {
+                galleryOverlayMedia.classList.remove("landscape");
+            }
+        };
+
+        galleryOverlayMedia.addEventListener("load", applyOrientation);
+        galleryOverlayMedia.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+
+        galleryOverlay.insertBefore(
+            galleryOverlayMedia,
+            galleryOverlay.querySelector(".gallery-close")
+        );
+
+        const oldCounter = galleryOverlay.querySelector(".gallery-counter");
+        if (oldCounter) oldCounter.remove();
+
+        const oldCaption = galleryOverlay.querySelector(".gallery-caption");
+        if (oldCaption) oldCaption.remove();
+
+        const caption = document.createElement("div");
+        caption.className = "gallery-caption";
+        caption.textContent = captionText;
+        galleryOverlay.appendChild(caption);
+
+        const counter = document.createElement("div");
+        counter.className = "gallery-counter";
+        counter.textContent =
+            `${galleryCurrentIndex + 1} / ${galleryPhotos.length}`;
+        galleryOverlay.appendChild(counter);
+
+        applyOrientation();
+    }
+
+    function openGalleryVideoFullscreen(video) {
+        closeGalleryOverlay();
 
         galleryOverlay = document.createElement("div");
         galleryOverlay.className = "gallery-fullscreen-overlay";
-
-        const media = item.querySelector("img, video");
-        if (!media) return;
-
-        galleryOverlayMedia = media.cloneNode(true);
-        galleryOverlayMedia.removeAttribute("id");
-        galleryOverlayMedia.className = "gallery-fullscreen-media";
-
-        if (galleryOverlayMedia.tagName === "VIDEO") {
-            galleryOverlayMedia.setAttribute("controls", "");
-            galleryOverlayMedia.setAttribute("playsinline", "");
-            galleryOverlayMedia.addEventListener("click", (event) => {
-                /*
-                * Any tap/click anywhere on the fullscreen video returns it
-                * to its normal gallery position.
-                */
-                event.stopPropagation();
-                closeGalleryFullscreen();
-            });
-        } else {
-            galleryOverlayMedia.addEventListener("click", closeGalleryFullscreen);
-        }
-
-        galleryOverlay.appendChild(galleryOverlayMedia);
+        galleryOverlay.style.background = "#000";
+        galleryOverlay.style.padding = "0";
 
         galleryOverlay.addEventListener("click", (event) => {
             if (event.target === galleryOverlay) {
-                closeGalleryFullscreen();
+                closeGalleryOverlay();
             }
         });
 
+        let videoTouchStartX = 0;
+        galleryOverlay.addEventListener("touchstart", (event) => {
+            videoTouchStartX = event.changedTouches[0].screenX;
+        }, { passive: true });
+
+        galleryOverlay.addEventListener("touchend", (event) => {
+            const diff = event.changedTouches[0].screenX - videoTouchStartX;
+            if (diff > 50) {
+                closeGalleryOverlay();
+                showGalleryPhoto(galleryPhotos.length - 1);
+            }
+        }, { passive: true });
+
+        const videoPrev = document.createElement("button");
+        videoPrev.className = "gallery-nav prev";
+        videoPrev.type = "button";
+        videoPrev.setAttribute("aria-label", "Previous photo");
+        videoPrev.textContent = "‹";
+        videoPrev.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            /* Video is the last item: go back to photo 30. */
+            closeGalleryOverlay();
+            showGalleryPhoto(galleryPhotos.length - 1);
+        });
+        galleryOverlay.appendChild(videoPrev);
+
+        galleryOverlayMedia = video.cloneNode(true);
+        galleryOverlayMedia.removeAttribute("id");
+        galleryOverlayMedia.className = "gallery-fullscreen-video";
+        galleryOverlayMedia.setAttribute("controls", "");
+        galleryOverlayMedia.setAttribute("playsinline", "");
+        galleryOverlayMedia.autoplay = true;
+
+        galleryOverlayMedia.addEventListener("ended", () => {
+            closeGalleryOverlay();
+        });
+
+        galleryOverlay.appendChild(galleryOverlayMedia);
         document.body.appendChild(galleryOverlay);
         document.body.style.overflow = "hidden";
+
+        galleryOverlayMedia.play().catch((error) => {
+            console.log("Gallery video could not start:", error);
+        });
     }
 
-    /* Close with Escape too */
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            closeGalleryFullscreen();
-        }
-    });
-
-    galleryItems.forEach(item => {
-        item.addEventListener("click", (event) => {
-
-            /* Keep the original mobile gallery behavior. */
-            if (window.innerWidth > 480) {
-                return;
-            }
-
-            /* Do not let video native controls trigger the row swap. */
-            if (event.target.tagName === "VIDEO" && event.offsetY > event.target.clientHeight - 55) {
-                return;
-            }
-
-            const currentItems =
-                Array.from(galleryGrid.children);
-
-            const currentIndex =
-                currentItems.indexOf(item);
-
-            if (currentIndex === -1) return;
-
-            /* Find the group of 3 containing the clicked item. */
-            const rowStart =
-                Math.floor(currentIndex / 3) * 3;
-
-            const rowItems =
-                currentItems.slice(rowStart, rowStart + 3);
-
-            /* The middle item opens fullscreen. Tap it again to return. */
-            if (rowItems[1] === item) {
-                if (galleryOverlay) {
-                    closeGalleryFullscreen();
-                } else {
-                    openGalleryFullscreen(item);
-                }
-                return;
-            }
-
-            /* If another image is fullscreen, close it first. */
-            closeGalleryFullscreen();
-
-            const clickedPosition = currentIndex - rowStart;
-
-            /* Swap the clicked item with the center item. */
-            const reorderedRow = [...rowItems];
-
-            [
-                reorderedRow[clickedPosition],
-                reorderedRow[1]
-            ] = [
-                reorderedRow[1],
-                reorderedRow[clickedPosition]
-            ];
-
-            /* Keep this exact row in its original position. */
-            const rowAnchor = rowItems[0];
-            const placeholder = document.createComment("gallery-row-anchor");
-            galleryGrid.insertBefore(placeholder, rowAnchor);
-
-            const fragment = document.createDocumentFragment();
-            reorderedRow.forEach(rowItem => {
-                fragment.appendChild(rowItem);
-            });
-
-            galleryGrid.insertBefore(fragment, placeholder);
-            placeholder.remove();
+    galleryPhotos.forEach((image, index) => {
+        image.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            showGalleryPhoto(index);
         });
     });
 
+    if (galleryVideo) {
+        galleryVideo.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            openGalleryVideoFullscreen(galleryVideo);
+        });
+    }
+
+    document.addEventListener("keydown", (event) => {
+        if (!galleryOverlay) return;
+
+        if (event.key === "Escape") {
+            closeGalleryOverlay();
+        }
+
+        if (event.key === "ArrowLeft") {
+            if (galleryOverlayMedia?.tagName === "VIDEO") {
+                showGalleryPhoto(galleryPhotos.length - 1);
+            } else {
+                goGalleryPrevious();
+            }
+        }
+
+        if (event.key === "ArrowRight" && galleryOverlayMedia?.tagName !== "VIDEO") {
+            goGalleryNext();
+        }
+    });
 
         // =========================================================
         // MUSIC: PLAY ONLY ONE SONG AT A TIME
@@ -2648,16 +3057,6 @@
                     }
                 });
             }
-        });
-
-        // =========================================================
-        // CLICK GALLERY VIDEO TO PLAY / PAUSE
-        // =========================================================
-        document.querySelectorAll("#pageGallery video").forEach((video) => {
-            video.addEventListener("click", (event) => {
-                // Let the gallery fullscreen logic handle the video tap.
-                event.stopPropagation();
-            });
         });
 
     </script>
