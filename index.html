@@ -12,7 +12,7 @@
         ========================================================= */
 
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Jomhuria&display=swap');
+
             /* No blue text/image selection anywhere on the page. */
             *, *::before, *::after {
                 -webkit-tap-highlight-color: transparent;
@@ -27,7 +27,7 @@
                 background: transparent;
                 color: inherit;
             }
-            a, button, img,  style="color: #8f1730;"video, .polaroid, .gallery-photo, .gallery-video-card {
+            a, button, img, video, .polaroid, .gallery-photo, .gallery-video-card {
                 user-select: none;
                 -webkit-user-select: none;
                 -webkit-touch-callout: none;
@@ -782,7 +782,7 @@
             align-items: start;
         }
 
-  style="color: #8f1730;"       .polaroid {
+        .polaroid {
             background: #fff;
             padding: 10px 10px 25px;
             box-shadow: 0 18px 35px rgba(50,25,30,0.13);
@@ -793,12 +793,12 @@
             position: relative;
         }
 
-  style="color: #8f1730;"       .polaroid:nth-child(4n + 1) { transform: rotate(-2deg); }
-  style="color: #8f1730;"       .polaroid:nth-child(4n + 2) { transform: rotate(2deg); }
-  style="color: #8f1730;"       .polaroid:nth-child(4n + 3) { transform: rotate(-1deg); }
-  style="color: #8f1730;"       .polaroid:nth-child(4n + 4) { transform: rotate(1.5deg); }
+        .polaroid:nth-child(4n + 1) { transform: rotate(-2deg); }
+        .polaroid:nth-child(4n + 2) { transform: rotate(2deg); }
+        .polaroid:nth-child(4n + 3) { transform: rotate(-1deg); }
+        .polaroid:nth-child(4n + 4) { transform: rotate(1.5deg); }
 
-  style="color: #8f1730;"       .polaroid:hover {
+        .polaroid:hover {
             transform: rotate(0deg) translateY(-8px) scale(1.025);
             z-index: 3;
             box-shadow: 0 24px 45px rgba(50,25,30,0.18);
@@ -818,7 +818,7 @@
             justify-content: center;
             overflow: hidden;
             color: #a56c78;
-            font-family: "Amiri", serif;
+            font-family: "Caveat", cursive;
             font-size: 22px;
         }
 
@@ -1224,11 +1224,11 @@
             margin: auto;
         }
 
-  style="color: #8f1730;"       .polaroid {
+        .polaroid {
             transform: none !important;
         }
 
-  style="color: #8f1730;"       .polaroid:hover {
+        .polaroid:hover {
             transform: translateY(-5px) !important;
         }
 
@@ -1249,7 +1249,7 @@
             margin: 0 auto;
         }
 
-        #pageG style="color: #8f1730;"allery .polaroid {
+        #pageGallery .polaroid {
             width: 100%;
             min-width: 0;
         }
@@ -1289,13 +1289,13 @@
             margin: 0;
         }
 
-        #pageG style="color: #8f1730;"allery .polaroid {
+        #pageGallery .polaroid {
             width: 100%;
             min-width: 0;
             transform: none !important;
         }
 
-        #pageG style="color: #8f1730;"allery .polaroid:hover {
+        #pageGallery .polaroid:hover {
             transform: translateY(-5px) scale(1.01) !important;
         }
 
@@ -1336,7 +1336,7 @@
             margin-left: 0;
             margin-right: 0;
         }
-    
+    }
 
     img,
     video {
@@ -1777,16 +1777,9 @@
 
                 </div>
 
-                            <!-- <style>
-                                        data-caption{
-                                            color: #8f1730;
-                                        }
-                            </style> -->
 
                 <div class="gallery-grid">\n\n                    <!-- PHOTO 1 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="0" 
-                    data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً">
+                    <div class="polaroid gallery-photo" data-gallery-index="0" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/file_000000004dc081f487bfb33285a7297f.png"
@@ -1796,9 +1789,7 @@
                     </div>
 
                     <!-- PHOTO 2 -->
-                    <div  style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="1" data-caption=
-"تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً"></div>
+                    <div class="polaroid gallery-photo" data-gallery-index="1" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_090.jpg"
@@ -1808,10 +1799,7 @@
                     </div>
 
                     <!-- PHOTO 3 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="2" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="2" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_092.jpg"
@@ -1821,10 +1809,7 @@
                     </div>
 
                     <!-- PHOTO 4 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="3" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="3" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_093.jpg"
@@ -1834,10 +1819,7 @@
                     </div>
 
                     <!-- PHOTO 5 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="4" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="4" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_311.jpg"
@@ -1847,10 +1829,7 @@
                     </div>
 
                     <!-- PHOTO 6 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="5" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="5" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_330.jpg"
@@ -1860,10 +1839,7 @@
                     </div>
 
                     <!-- PHOTO 7 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="6" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="6" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_358.jpg"
@@ -1873,10 +1849,7 @@
                     </div>
 
                     <!-- PHOTO 8 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="7" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="7" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_0539.jpg"
@@ -1886,10 +1859,7 @@
                     </div>
 
                     <!-- PHOTO 9 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="8" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="8" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_0569.jpg"
@@ -1899,10 +1869,7 @@
                     </div>
 
                     <!-- PHOTO 10 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="9" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="9" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_580.jpg"
@@ -1912,10 +1879,7 @@
                     </div>
 
                     <!-- PHOTO 11 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="10" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="10" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260824_121954_769.jpg"
@@ -1925,10 +1889,7 @@
                     </div>
 
                     <!-- PHOTO 12 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="11" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="11" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_081944_051.jpg"
@@ -1938,10 +1899,7 @@
                     </div>
 
                     <!-- PHOTO 13 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="12" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="12" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_081944_297.jpg"
@@ -1951,10 +1909,7 @@
                     </div>
 
                     <!-- PHOTO 14 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="13" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="13" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_081944_317.jpg"
@@ -1964,10 +1919,7 @@
                     </div>
 
                     <!-- PHOTO 15 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="14" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="14" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_114744_424.jpg"
@@ -1977,10 +1929,7 @@
                     </div>
 
                     <!-- PHOTO 16 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="15" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="15" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121601_995.jpg"
@@ -1990,10 +1939,7 @@
                     </div>
 
                     <!-- PHOTO 17 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="16" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="16" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121602_054.jpg"
@@ -2003,10 +1949,7 @@
                     </div>
 
                     <!-- PHOTO 18 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="17" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="17" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121602_280.jpg"
@@ -2016,10 +1959,7 @@
                     </div>
 
                     <!-- PHOTO 19 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="18" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="18" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121602_302.jpg"
@@ -2029,10 +1969,7 @@
                     </div>
 
                     <!-- PHOTO 20 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="19" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="19" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121602_369.jpg"
@@ -2042,10 +1979,7 @@
                     </div>
 
                     <!-- PHOTO 21 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="20" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="20" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121655_498.jpg"
@@ -2055,10 +1989,7 @@
                     </div>
 
                     <!-- PHOTO 22 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="21" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="21" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121655_499.jpg"
@@ -2068,10 +1999,7 @@
                     </div>
 
                     <!-- PHOTO 23 -->
-                    <div style="color: #8f1730;" class="polaroid gallery-photo" data-gallery-index="22" data-caption="تَنَازَلَ الْجَمَالُ عَنِ الْجَمَالِ لِجَمَالِكَ فَزَادَ جَمَالُكَ عَلَى الْجَمَالِ جَمَالاً
-
-وَلَوْ شَهِدَ الْجَمَالُ جَمَالَ وَجْهِكَ لَسَجَدَ الْجَمَالُ لِجَمَالِ حُسْنِكَ إِجْلَالاً
-">
+                    <div class="polaroid gallery-photo" data-gallery-index="22" data-caption="Write your caption here...">
                         <div class="photo-placeholder">
                             <img
                                 src="img/IMG_20260826_121655_777.jpg"
@@ -2082,7 +2010,7 @@
 
                     
                     <!-- VIDEO -->
-                    <div style="color: #8f1730;" class="polaroid gallery-video-card">
+                    <div class="polaroid gallery-video-card">
                         <div class="photo-placeholder">
                             <video
                                 src="img/20260827_080004_0000.mp4"
